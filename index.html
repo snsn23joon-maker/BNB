@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNB - 온보딩</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #FFF9F5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 414px;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2C3E50;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #7F8C8D;
+            font-weight: 400;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .option-card {
+            background-color: #F8F9FA;
+            border: 2px solid #E9ECEF;
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-card.selected {
+            border-color: #4A90E2;
+            background-color: #F0F8FF;
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
+            transform: scale(1.02);
+        }
+
+        .option-card.selected::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4A90E2, #5BA0F2);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .option-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .option-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-description {
+            font-size: 14px;
+            color: #6C757D;
+            line-height: 1.5;
+        }
+
+        .button-container {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .next-button {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #D1D5DB;
+            color: #9CA3AF;
+        }
+
+        .next-button.active {
+            background: linear-gradient(135deg, #4A90E2, #5BA0F2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .next-button.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .next-button.active:active {
+            transform: translateY(0);
+        }
+
+        /* 모바일 최적화 */
+        @media (max-width: 375px) {
+            .container {
+                gap: 30px;
+            }
+            
+            .question {
+                font-size: 22px;
+            }
+            
+            .option-card {
+                padding: 20px;
+            }
+            
+            .option-icon {
+                font-size: 28px;
+            }
+            
+            .option-title {
+                font-size: 16px;
+            }
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .options {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .button-container {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        /* 선택 애니메이션 */
+        @keyframes selectPulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1.02);
+            }
+        }
+
+        .option-card.selecting {
+            animation: selectPulse 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="question">이 앱을 어떤 방식으로 사용하고 싶으신가요?</h1>
+            <p class="subtitle">나에게 맞는 사용 방식을 선택해주세요</p>
+        </div>
+
+        <div class="options">
+            <div class="option-card" data-type="search">
+                <div class="option-content">
+                    <div class="option-icon">🔍</div>
+                    <div class="option-text">
+                        <div class="option-title">
+                            <strong>검색형</strong>
+                        </div>
+                        <div class="option-description">
+                            필요한 말씀을 빠르게 검색하고, 주제별 말씀을 찾을 수 있어요
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-card" data-type="reading">
+                <div class="option-content">
+                    <div class="option-icon">📖</div>
+                    <div class="option-text">
+                        <div class="option-title">
+                            <strong>읽기 & 기록형</strong>
+                        </div>
+                        <div class="option-description">
+                            통독 루틴을 만들고, 읽은 말씀을 기록으로 남기세요
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-card" data-type="sharing">
+                <div class="option-content">
+                    <div class="option-icon">💬</div>
+                    <div class="option-text">
+                        <div class="option-title">
+                            <strong>나눔 & 공유형</strong>
+                        </div>
+                        <div class="option-description">
+                            은혜 받은 말씀을 카드로 만들고, 지인이나 SNS에 공유하세요
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="next-button" id="nextButton" disabled>
+                다음
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase 설정 파일 -->
+    <script src="firebase-config.js"></script>
+
+    <script>
+        let selectedType = null;
+        const optionCards = document.querySelectorAll('.option-card');
+        const nextButton = document.getElementById('nextButton');
+
+        // 카드 선택 이벤트
+        optionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const type = this.dataset.type;
+                
+                // 이전 선택 해제
+                optionCards.forEach(c => {
+                    c.classList.remove('selected');
+                    c.classList.remove('selecting');
+                });
+
+                // 새로운 선택
+                this.classList.add('selected');
+                this.classList.add('selecting');
+                
+                // 선택 애니메이션 후 클래스 제거
+                setTimeout(() => {
+                    this.classList.remove('selecting');
+                }, 300);
+
+                selectedType = type;
+                updateNextButton();
+            });
+        });
+
+        // 다음 버튼 상태 업데이트
+        function updateNextButton() {
+            if (selectedType) {
+                nextButton.classList.add('active');
+                nextButton.disabled = false;
+            } else {
+                nextButton.classList.remove('active');
+                nextButton.disabled = true;
+            }
+        }
+
+        // 다음 버튼 클릭 이벤트
+        nextButton.addEventListener('click', async function() {
+            if (selectedType) {
+                // 버튼 비활성화
+                nextButton.disabled = true;
+                nextButton.textContent = '저장 중...';
+                
+                try {
+                    // Firebase에 온보딩 데이터 저장
+                    const result = await FirebaseService.saveOnboardingData(selectedType, {
+                        selectedAt: new Date().toISOString(),
+                        userTypeName: getTypeName(selectedType)
+                    });
+                    
+                    if (result.success) {
+                        // 온보딩 완료 상태 저장
+                        await FirebaseService.markOnboardingComplete();
+                        
+                        // 로컬 스토리지에도 저장 (백업용)
+                        localStorage.setItem('userType', selectedType);
+                        
+                        // 성공 메시지
+                        alert(`선택하신 타입: ${getTypeName(selectedType)}\n데이터가 성공적으로 저장되었습니다.\n다음 화면으로 이동합니다.`);
+                        
+                        // 실제 구현에서는 여기서 다음 화면으로 라우팅
+                        // window.location.href = '/home';
+                    } else {
+                        // Firebase 저장 실패 시 로컬 스토리지만 저장
+                        localStorage.setItem('userType', selectedType);
+                        localStorage.setItem('offlineOnboardingData', JSON.stringify({
+                            userType: selectedType,
+                            selectedAt: new Date().toISOString(),
+                            userTypeName: getTypeName(selectedType)
+                        }));
+                        
+                        alert(`선택하신 타입: ${getTypeName(selectedType)}\n오프라인 모드로 저장되었습니다.\n다음 화면으로 이동합니다.`);
+                    }
+                    
+                } catch (error) {
+                    console.error('데이터 저장 중 오류:', error);
+                    
+                    // 오류 발생 시 로컬 스토리지만 저장
+                    localStorage.setItem('userType', selectedType);
+                    localStorage.setItem('offlineOnboardingData', JSON.stringify({
+                        userType: selectedType,
+                        selectedAt: new Date().toISOString(),
+                        userTypeName: getTypeName(selectedType),
+                        error: error.message
+                    }));
+                    
+                    alert(`선택하신 타입: ${getTypeName(selectedType)}\n오프라인 모드로 저장되었습니다.\n다음 화면으로 이동합니다.`);
+                } finally {
+                    // 버튼 상태 복원
+                    nextButton.disabled = false;
+                    nextButton.textContent = '다음';
+                }
+            }
+        });
+
+        // 타입 이름 반환
+        function getTypeName(type) {
+            const typeNames = {
+                'search': '검색형',
+                'reading': '읽기 & 기록형',
+                'sharing': '나눔 & 공유형'
+            };
+            return typeNames[type] || type;
+        }
+
+        // 터치 이벤트 최적화 (모바일)
+        optionCards.forEach(card => {
+            card.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        });
+
+        // 페이지 로드 시 Firebase 연결 확인 및 세션 시작
+        window.addEventListener('load', async function() {
+            try {
+                // Firebase 연결 상태 확인
+                const connectionStatus = await FirebaseService.checkFirebaseConnection();
+                
+                if (connectionStatus.connected) {
+                    console.log('Firebase 연결 성공');
+                    
+                    // 사용자 세션 시작
+                    await FirebaseService.trackUserSession({
+                        page: 'onboarding',
+                        referrer: document.referrer
+                    });
+                    
+                    // 오프라인 데이터가 있다면 동기화
+                    await FirebaseService.syncOfflineData();
+                    
+                } else {
+                    console.log('Firebase 연결 실패:', connectionStatus.error);
+                }
+                
+            } catch (error) {
+                console.error('Firebase 초기화 중 오류:', error);
+            }
+        });
+    </script>
+</body>
+</html> 
