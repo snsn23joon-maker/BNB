@@ -18,7 +18,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #F8FCF8 0%, #F0F8F0 50%, #E8F4E8 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -85,27 +85,24 @@
             bottom: clamp(-12px, -2vw, -18px);
             left: 50%;
             transform: translateX(-50%);
-            width: clamp(50px, 10vw, 80px);
-            height: clamp(2px, 0.5vw, 4px);
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-            border-radius: 2px;
+            width: clamp(120px, 25vw, 200px);
+            height: clamp(3px, 0.8vw, 6px);
+            background: linear-gradient(90deg, #ff6b6b, #ffa726, #ffeb3b, #4caf50, #2196f3, #9c27b0);
+            border-radius: 3px;
         }
 
         .question {
-            font-size: clamp(24px, 5vw, 32px);
+            font-size: clamp(16px, 3.4vw, 22px);
             font-weight: 700;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #000000;
             line-height: 1.3;
             margin-bottom: clamp(10px, 2vw, 20px);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .subtitle {
             font-size: clamp(14px, 3vw, 18px);
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(0, 0, 0, 0.6);
             font-weight: 400;
             letter-spacing: 0.5px;
         }
@@ -118,16 +115,16 @@
         }
 
         .option-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: clamp(16px, 3vw, 24px);
-            padding: clamp(20px, 4vw, 32px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 24px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .option-card::before {
@@ -146,16 +143,16 @@
         }
 
         .option-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .option-card.selected {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,248,255,0.95) 100%);
-            border: 2px solid #4A90E2;
-            box-shadow: 0 20px 40px rgba(74, 144, 226, 0.3);
-            transform: translateY(-8px) scale(1.03);
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,255,248,0.98) 100%);
+            border: 2px solid #4CAF50;
+            box-shadow: 0 12px 30px rgba(76, 175, 80, 0.15);
+            transform: translateY(-4px) scale(1.01);
         }
 
         .option-card.selected::after {
@@ -165,7 +162,7 @@
             right: clamp(12px, 2vw, 18px);
             width: clamp(20px, 4vw, 28px);
             height: clamp(20px, 4vw, 28px);
-            background: linear-gradient(135deg, #4A90E2, #5BA0F2);
+            background: linear-gradient(135deg, #4CAF50, #5BA0F2);
             color: white;
             border-radius: 50%;
             display: flex;
@@ -183,16 +180,25 @@
 
         .option-content {
             display: flex;
-            align-items: flex-start;
-            gap: clamp(16px, 3vw, 24px);
+            align-items: center;
+            gap: 16px;
         }
 
         .option-icon {
-            font-size: clamp(28px, 6vw, 40px);
+            width: 34px;
+            height: 34px;
             flex-shrink: 0;
-            margin-top: 4px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: transform 0.3s ease;
+        }
+        
+        .option-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
         }
 
         .option-card:hover .option-icon {
@@ -204,22 +210,19 @@
         }
 
         .option-title {
-            font-size: clamp(18px, 4vw, 24px);
-            font-weight: 700;
-            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: clamp(8px, 2vw, 12px);
+            font-size: 14px;
+            font-weight: 400;
+            color: #000000;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .option-description {
-            font-size: clamp(14px, 3vw, 16px);
+            font-size: 12px;
             color: #6C757D;
-            line-height: 1.6;
+            line-height: 1.5;
             font-weight: 400;
         }
 
@@ -261,15 +264,15 @@
         }
 
         .next-button.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
             color: white;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
             transform: translateY(-2px);
         }
 
         .next-button.active:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
         }
 
         .next-button.active:active {
@@ -278,7 +281,7 @@
 
         /* 로딩 애니메이션 */
         .next-button.loading {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
             color: transparent;
             position: relative;
         }
@@ -332,23 +335,24 @@
             }
             
             .question {
-                font-size: 36px;
+                font-size: 24px;
             }
             
             .option-card {
-                padding: 36px;
+                padding: 32px;
             }
             
             .option-icon {
-                font-size: 48px;
+                width: 39px;
+                height: 39px;
             }
             
             .option-title {
-                font-size: 28px;
+                font-size: 20px;
             }
             
             .option-description {
-                font-size: 18px;
+                font-size: 13px;
             }
         }
 
@@ -479,47 +483,54 @@
         </div>
 
         <div class="options">
-            <div class="option-card" data-type="search">
-                <div class="option-content">
-                    <div class="option-icon">🔍</div>
-                    <div class="option-text">
-                        <div class="option-title">
-                            <strong>검색형</strong>
+                                                   <div class="option-card" data-type="search">
+                                      <div class="option-content">
+                        <div class="option-icon">
+                            <img src="book-search.svg" alt="검색형 아이콘">
                         </div>
-                        <div class="option-description">
-                            필요한 말씀을 빠르게 검색하고, 주제별 말씀을 찾을 수 있어요
+                      <div class="option-text">
+                          <div class="option-title">
+                              <strong>검색형</strong>
+                          </div>
+                          <div class="option-description">
+                              필요한 말씀을 빠르게 검색하고, 주제별 말씀을 찾을 수 있어요
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+                                                   <div class="option-card" data-type="reading">
+                                      <div class="option-content">
+                        <div class="option-icon">
+                            <img src="book-pen.svg" alt="읽기 & 기록형 아이콘">
+                        </div>
+                      <div class="option-text">
+                          <div class="option-title">
+                              <strong>읽기 & 기록형</strong>
+                          </div>
+                          <div class="option-description">
+                              통독 루틴을 만들고, 읽은 말씀을 기록으로 남기세요
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+                                                                                                                                                                                                               <div class="option-card" data-type="sharing">
+                    <div class="option-content">
+                        <div class="option-icon">
+                            <img src="book-people.svg" alt="나눔 & 공유형 아이콘">
+                        </div>
+                        <div class="option-text">
+                            <div class="option-title">
+                                <strong>나눔 & 공유형</strong>
+                            </div>
+                            <div class="option-description">
+                                은혜 받은 말씀을 카드로 만들고, 지인이나 SNS에 공유하세요
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="option-card" data-type="reading">
-                <div class="option-content">
-                    <div class="option-icon">📖</div>
-                    <div class="option-text">
-                        <div class="option-title">
-                            <strong>읽기 & 기록형</strong>
-                        </div>
-                        <div class="option-description">
-                            통독 루틴을 만들고, 읽은 말씀을 기록으로 남기세요
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                         <div class="option-card" data-type="sharing">
-                 <div class="option-content">
-                     <div class="option-icon">👥</div>
-                     <div class="option-text">
-                         <div class="option-title">
-                             <strong>나눔 & 공유형</strong>
-                         </div>
-                         <div class="option-description">
-                             은혜 받은 말씀을 카드로 만들고, 지인이나 SNS에 공유하세요
-                         </div>
-                     </div>
-                 </div>
-             </div>
+               </div>
         </div>
 
         <div class="button-container">
